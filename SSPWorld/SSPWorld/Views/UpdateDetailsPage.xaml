@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Name="UpdateDetails"
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.UpdateDetailsPage">
+    <ContentPage.Content>
+        <StackLayout Padding="10"
+                     BackgroundColor="#0C2D48">
+            <StackLayout BindingContext="{Binding Update}">
+                <Label Text="{Binding Path=BindingContext.CourseName,
+                    Source={x:Reference Name=UpdateDetails}, StringFormat='{0} Announcement'}"
+                       HorizontalOptions="Center"
+                       FontSize="20"
+                       TextColor="#B1D4E0"/>
+                <Label Text="{Binding Title}"
+                       HorizontalOptions="Center"
+                       FontSize="30"
+                       TextColor="White"/>
+                <Label Text="{Binding Body}"
+                       HorizontalOptions="Center"
+                       TextColor="#6E8BA2"
+                       FontSize="20" Margin="0, 20, 0, 20" />
+                <Label Text="{Binding StartDate, StringFormat='Announced At: {0}'}"
+                       TextColor="Chartreuse"/>
+                <Label Text="{Binding Deadline, StringFormat='Deadline: {0}'}"
+                       TextColor="Brown"/>
+
+                <Label Text="{Binding Path=BindingContext.DaysLeft,
+                    Source={x:Reference Name=UpdateDetails},
+                    StringFormat='Days Left: {0}'}"
+                        HorizontalOptions="Center"
+                        Margin="0, 20, 0 , 0"
+                        TextColor="White"
+                       />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

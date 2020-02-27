@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:valueConverters="clr-namespace:SSPWorld.Utilities.ValueConverters"
+             xmlns:behaviors="clr-namespace:SSPWorld.Utilities.Behaviors"  
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.CoursesPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <valueConverters:IntEnumConverter x:Key="IntEnum"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout BackgroundColor="#0C2D48">
+            <StackLayout Orientation="Horizontal"
+                     BackgroundColor="#145dA0"
+                     HeightRequest="75"
+                     VerticalOptions="Start">
+
+                <Label HorizontalOptions="Start"
+                   VerticalOptions="Center"
+                   Margin="20, 5, 0, 5"
+                   Text="Term"
+                   TextColor="White"
+                   FontSize="20"/>
+
+                <Picker WidthRequest="100"  
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start"
+                    TextColor="White"
+                    Margin="20, 10, 20, 5"
+                    ItemsSource="{Binding TermsNames}"
+                    SelectedIndex="{Binding SelectedTerm,
+                    Converter={StaticResource IntEnum}}">
+                    <Picker.Behaviors>
+                        <behaviors:EventToCommandBehavior 
+                            EventName="SelectedIndexChanged" 
+                            Command="{Binding SelectedIndexCommand}" />
+                    </Picker.Behaviors>
+                </Picker>
+
+                <Button Margin="5, 15, 15, 15" 
+                        HorizontalOptions="EndAndExpand"
+                        Text="Show Everything"
+                        Command="{Binding RestFilterCommand}"/>
+            </StackLayout>
+
+            <ListView   ItemsSource="{Binding Courses}"
+                        SelectedItem="{Binding SelectedCourse, Mode=TwoWay}"
+                        HasUnevenRows="True"
+                        IsGroupingEnabled="True"
+                        SeparatorColor="#145dA0">
+
+                <ListView.Behaviors>
+                    <behaviors:EventToCommandBehavior 
+                        EventName="ItemTapped"
+                        Command="{Binding ItemTappedCommand}" />
+                </ListView.Behaviors>
+
+            
+                <ListView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell Height="30">
+                            <StackLayout  VerticalOptions="FillAndExpand"
+                                          Padding="5">
+                                <Label Text="{Binding Title}" 
+                                       TextColor="Bisque" 
+                                       Margin="5, 0, 0, 0"
+                                       VerticalOptions="Center"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.GroupHeaderTemplate>
+            
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" HeightRequest="40" Padding="20">
+                                <StackLayout>
+                                    <Label  Text="{Binding Name}"  
+                                        VerticalOptions="Center"
+                                        HorizontalOptions="Start"                                        
+                                        TextColor="White"/>
+                                    <Label Text="{Binding CourseType}"
+                                       HorizontalOptions="Start"
+                                       TextColor="AntiqueWhite"/>
+                                </StackLayout>
+                                <!-- is enabled to be valued due to converter 
+                                <Button Text="Subscribe"
+                                        Command="{Binding SubscribeCommand}"
+                                        IsEnabled="{Binding IsEnrolled}"
+                                        HorizontalOptions="EndAndExpand" />
+                                -->
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

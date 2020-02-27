@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SSPWorld.Views"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:windows="clr-namespace:Xamarin.Forms.PlatformConfiguration.WindowsSpecific;assembly=Xamarin.Forms.Core"
+             windows:TabbedPage.HeaderIconsEnabled="true"
+             android:TabbedPage.ToolbarPlacement="Bottom"
+             NavigationPage.HasNavigationBar="false"            
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.HomePage">
+
+    <windows:TabbedPage.HeaderIconsSize>
+    <Size>
+        <x:Arguments>
+            <x:Double>24</x:Double>
+            <x:Double>24</x:Double>
+        </x:Arguments>
+    </Size>
+    </windows:TabbedPage.HeaderIconsSize>
+
+    <!--
+    <TabbedPage.BarBackgroundColor>#2b2841</TabbedPage.BarBackgroundColor>
+    <TabbedPage.SelectedTabColor>#fe787d</TabbedPage.SelectedTabColor>
+    -->
+
+
+    <!--Pages can be added as references or inline-->
+    <local:ProfilePage Title="Profile" IconImageSource="profile.png" />
+    <local:FeedPage Title="Feed" IconImageSource="feed.png" />
+    <local:CalendarPage Title="Calendar" IconImageSource="calendar.png" />
+    <local:CoursesPage Title="Courses" IconImageSource="course.png" />
+</TabbedPage>

@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
+             xmlns:behaviors="clr-namespace:SSPWorld.Utilities.Behaviors"
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.ProfilePage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView BackgroundColor="#0C2D48">
+        <Grid RowSpacing="0"
+              ColumnSpacing="0"
+              Padding="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="280" />
+                <RowDefinition Height="75" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <BoxView BackgroundColor="#145dA0" Grid.Row="0" Grid.ColumnSpan="2" />
+            <StackLayout Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                
+                <Label HorizontalOptions="Center" 
+                       Text="{Binding FullName}"
+                       FontSize="30"
+                       TextColor="White"               
+                       Margin="0, 30, 0, 20" />
+
+                <controls:CircleImage
+                       Source="{Binding Student.Image}"
+                       HeightRequest="120" 
+                       WidthRequest="120"
+                       HorizontalOptions="Center"/>
+            </StackLayout>
+
+
+            <BoxView Grid.Row="1" Grid.Column="0" BackgroundColor="#B1D4E0" />
+            <Label Grid.Row="1" 
+                   Grid.Column="0" 
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   TextColor="#238BC0"
+                   FontSize="18"
+                   Text="{Binding Student.Year, StringFormat='{0} Year'}" />
+
+            <BoxView Grid.Row="1" Grid.Column="1" BackgroundColor="#238BC0" />
+            <Label Grid.Row="1" 
+                   Grid.Column="1" 
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   TextColor="#B1D4E0"
+                   FontSize="18"
+                   Text="{Binding Student.Department}" />
+
+            <ListView   ItemsSource="{Binding Courses}"
+                        Grid.Row="2" 
+                        Grid.Column="0" 
+                        Grid.ColumnSpan="2"
+                        Margin="30"
+                        SelectedItem="{Binding SelectedCourse, Mode=TwoWay}">
+
+                <ListView.Behaviors>
+                    <behaviors:EventToCommandBehavior 
+                        EventName="ItemTapped"
+                        Command="{Binding ItemTappedCommand}" />
+                </ListView.Behaviors>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Margin="10">
+                                <Label  Text="{Binding Name}"
+                                        TextColor="White" />
+                                <Label Text="{Binding CourseType}"
+                                        TextColor="BurlyWood"/>
+                                         
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+        </Grid>
+</ScrollView>
+
+</ContentPage>

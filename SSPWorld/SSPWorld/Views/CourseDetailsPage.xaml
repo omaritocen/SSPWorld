@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:valueConverters="clr-namespace:SSPWorld.Utilities.ValueConverters"
+             xmlns:behaviors="clr-namespace:SSPWorld.Utilities.Behaviors"  
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.CourseDetailsPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <valueConverters:BoolToValueConverter x:Key="textBool" 
+                                                  x:TypeArguments="x:String"
+                                                  TrueValue="Unsubscribe"
+                                                  FalseValue="Subscribe"/>
+
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+
+    <ContentPage.Content>
+        <StackLayout Padding="10"
+                     BackgroundColor="#0C2D48">
+            <StackLayout BindingContext="{Binding Course}">
+                <Label Text="{Binding Name}"
+                       FontSize="60"
+                       TextColor="White"/>
+                <Label Text="{Binding CourseType, StringFormat='{0} Course'}"
+                       FontSize="30"
+                       TextColor="#B1D4E0"/>
+                <Label Text="{Binding CreditHours, StringFormat='{0} Credit Hours'}"
+                       TextColor="#6E8BA2"
+                       FontSize="20"/>
+                <Label Text="{Binding CourseTerm, StringFormat='{0} Term'}"
+                       TextColor="#B1D4E0"
+                       FontSize="15"/>
+                <Label Text="{Binding EnrolledStudents, StringFormat='{0} Enrolled Students this semester'}" />
+            </StackLayout>
+
+            <Button Margin="0, 30, 0, 0" 
+                    Text="{Binding IsEnrolled, Converter={StaticResource textBool}}" 
+                    Command="{Binding SubscribeCommand}" />
+
+            <ListView ItemsSource="{Binding Updates}"
+                      SelectedItem="{Binding SelectedUpdate, Mode=TwoWay}">
+
+                <ListView.Behaviors>
+                    <behaviors:EventToCommandBehavior 
+                        Command="{Binding ItemTappedCommand}"
+                        EventName="ItemTapped"/>
+                </ListView.Behaviors>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Title}" Detail="{Binding Body}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
