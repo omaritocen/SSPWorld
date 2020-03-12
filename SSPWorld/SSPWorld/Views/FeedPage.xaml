@@ -7,8 +7,9 @@
              mc:Ignorable="d"
              x:Class="SSPWorld.Views.FeedPage">
     <ContentPage.Content>
-        <StackLayout Padding="10">
-            <Label Text="Latest Updates From Your Courses!" />
+        <StackLayout Padding="15">
+            <Label Text="Latest Updates From Your Courses!" HorizontalOptions="Center"
+                   FontSize="20" TextColor="Indigo" />
             <ListView ItemsSource="{Binding Updates}"
                       SelectedItem="{Binding SelectedUpdate, Mode=TwoWay}">
 

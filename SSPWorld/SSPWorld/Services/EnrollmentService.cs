@@ -1,62 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SSPWorld.Models;
+using Xamarin.Forms;
 
 namespace SSPWorld.Services
 {
-    public class EnrollmentService
+    public interface IEnrollmentService
     {
-        private List<Enrollment> _enrollments = new List<Enrollment>()
+        Task AddNewEnrollmentAsync(string courseId);
+        Task<bool> DeleteEnrollmentAsync(string courseId);
+        Task<bool> IsEnrolledAsync(string courseId);
+    }
+
+    public class EnrollmentService : BaseService, IEnrollmentService
+    {
+
+        private readonly HttpClient _client;
+        public EnrollmentService()
         {
-            new Enrollment
-            {
-                Id = 1,
-                StudentId = 6294,
-                CourseId = 2
-            },
-            new Enrollment
-            {
-                Id = 2,
-                StudentId = 6294,
-                CourseId = 4
-            },
-
-            new Enrollment
-            {
-                Id = 3,
-                StudentId = 6206,
-                CourseId = 3
-            },
-
-            new Enrollment
-            {
-                Id = 4,
-                StudentId = 5201,
-                CourseId = 1
-            },
-        };
-
-        public async Task<IEnumerable<Enrollment>> GetEnrollmentsAsync()
-        {
-            return _enrollments;
+            _client = new HttpClient();
+            var token = Application.Current.Properties["token"];
+            _client.DefaultRequestHeaders.Add("x-auth-token", token.ToString());
         }
 
-        public async Task<IEnumerable<Enrollment>> GetEnrollmentsByStudentId(int id)
+
+        public async Task AddNewEnrollmentAsync(string courseId)
         {
-            return _enrollments.Where(x => x.StudentId == id).ToList();
+            var url = string.Concat(URL, "enrollments");
+            var uri = new Uri(string.Format(url, string.Empty));
+
+            var data = new { _courseId = courseId};
+            var json = JsonConvert.SerializeObject(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var enrollment = JsonConvert.DeserializeObject<Enrollment>(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
         }
 
-        public async Task AddNewEnrollmentAsync(Enrollment enrollment)
+        public async Task<bool> DeleteEnrollmentAsync(string courseId)
         {
-            _enrollments.Add(enrollment);
+            var url = string.Concat(URL, "enrollments/deleteByCourseId/" + courseId);
+            var uri = new Uri(string.Format(url, string.Empty));
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.DeleteAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var enrollment = JsonConvert.DeserializeObject<Enrollment>(result);
+                    if (enrollment != null) return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return false;
         }
 
-        public async Task DeleteEnrollmentAsync(Enrollment enrollment)
+        public async Task<bool> IsEnrolledAsync(string courseId)
         {
-            _enrollments.Remove(enrollment);
+            var url = string.Concat(URL, "enrollments/isEnrolled/" + courseId);
+            var uri = new Uri(string.Format(url, string.Empty));
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var enrollment = JsonConvert.DeserializeObject<Enrollment>(result);
+                    if (enrollment != null) return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return false;
         }
     }
 }

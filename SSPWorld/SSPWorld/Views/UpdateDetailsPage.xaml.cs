@@ -12,7 +12,7 @@ namespace SSPWorld.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class UpdateDetailsPage : ContentPage
     {
-        public UpdateDetailsPage(int updateId)
+        public UpdateDetailsPage(string updateId)
         {
             InitializeComponent();
             BindingContext = new UpdateDetailsViewModel(updateId);

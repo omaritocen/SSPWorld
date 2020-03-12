@@ -8,14 +8,21 @@ using SSPWorld.Services;
 
 namespace SSPWorld.Repositories
 {
-    public class CourseRepository
+    public interface ICourseRepository
+    {
+        Task<Course> GetCourseById(string id);
+        Task<IEnumerable<Course>> GetCourses();
+        Task<List<CourseGrouping>> GetCourseGrouped();
+        Task<List<Course>> GetEnrolledCourses();
+    }
+
+    public class CourseRepository : ICourseRepository
     {
         private readonly CourseService _courseService = new CourseService();
 
-        public async Task<Course> GetCourseById(int id)
+        public async Task<Course> GetCourseById(string id)
         {
             return await _courseService.GetCourseByIdAsync(id);
-
         }
 
         public async Task<IEnumerable<Course>> GetCourses()
@@ -36,6 +43,11 @@ namespace SSPWorld.Repositories
 
             return allCoursesGrouped;
 
+        }
+
+        public async Task<List<Course>> GetEnrolledCourses()
+        {
+            return await _courseService.GetEnrolledCourses();
         }
     }
 }

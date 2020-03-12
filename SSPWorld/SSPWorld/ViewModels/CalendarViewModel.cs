@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using SSPWorld.Models;
 using SSPWorld.Repositories;
 using Xamarin.Forms;
@@ -11,7 +12,7 @@ namespace SSPWorld.ViewModels
 {
     public class CalendarViewModel : BaseViewModel
     {
-        private readonly UpdatesRepository _updatesRepository = new UpdatesRepository();
+        private readonly IUpdateRepository _updatesRepository = new UpdatesRepository();
         public DateTime DateNow { get; set; } = DateTime.Now;
 
         public EventCollection Events { get; private set; }
@@ -21,12 +22,15 @@ namespace SSPWorld.ViewModels
             InitCalendar();
         }
 
-        private async void InitCalendar()
+        private void InitCalendar()
         {
-            var id = Convert.ToInt32(Application.Current.Properties["SSPID"]);
-            var updates = await _updatesRepository.GetUpdatesBySSPId(id);
+            var updates = new List<Update>();
+            Task.Run(async () =>
+            {
+                updates = await _updatesRepository.GetEnrolledUpdates();
+            }).Wait();
+            
 
-            //var groupedUpdates = updates.ToDictionary(g => g.Deadline, e => .Title);
             Dictionary<DateTime, List<Update>> groupedUpdates =
                 updates
                     .GroupBy(k => k.Deadline)

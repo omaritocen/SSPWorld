@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using SSPWorld.Models;
 using SSPWorld.Repositories;
@@ -14,7 +15,7 @@ namespace SSPWorld.ViewModels
     {
         private readonly INavigation _navigation;
 
-        private readonly UpdatesRepository _updatesRepository = new UpdatesRepository();
+        private readonly IUpdateRepository _updatesRepository = new UpdatesRepository();
 
         private Update _selectedUpdate;
 
@@ -56,13 +57,13 @@ namespace SSPWorld.ViewModels
 
         private void CheckForChanges()
         {
-            MessagingCenter.Subscribe<CourseDetailsViewModel, Enrollment>
+            MessagingCenter.Subscribe<CourseDetailsViewModel, string>
             (this, "EnrollmentsChanged",
-            async (obj, arg) =>
+             (obj, args) =>
             {
-                GetUpdates(arg);
+                GetUpdates();
             });
-                
+
         }
 
         private void BindCommands()
@@ -70,27 +71,23 @@ namespace SSPWorld.ViewModels
             ItemTappedCommand = new Command(ItemTapped);
         }
 
-        private async void GetUpdates(Enrollment enrollment = null)
+        private void GetUpdates()
         {
             _updates.Clear();
-            var id = Convert.ToInt32(Application.Current.Properties["SSPID"]);
-            var updates = await _updatesRepository.GetUpdatesBySSPId(id);
+            var updates = new List<Update>();
 
-            // TO BE CHANGED 
-            if (enrollment != null)
+            Task.Run(async () =>
             {
-                 var enrollmentUpdates = await _updatesRepository.GetUpdatesByCourseId(enrollment.CourseId);
-                 foreach (var up in enrollmentUpdates)
-                 {
-                     _updates.Add(up);
-                 }
-
-            }
-
+                updates = await _updatesRepository.GetEnrolledUpdates();
+            }).Wait();
+             
+            if (updates == null) return;
+            
             foreach (var update in updates)
             {
                 _updates.Add(update);
             }
+            
         }
 
         private async void ItemTapped()

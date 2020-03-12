@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using SSPWorld.Services;
@@ -25,22 +26,27 @@ namespace SSPWorld.ViewModels
 
         private void BindCommands()
         {
-            LoginCommand = new Command(Login);
+            LoginCommand = new Command(async c => await Login());
         }
 
-        private async void Login()
+        private async Task Login()
         {
-            var success = await _userService.Login(int.Parse(SSPId), Password);
-            if (success)
+            using (UserDialogs.Instance.Loading("Loading", null, null, true, MaskType.Black))
             {
-                Application.Current.Properties["SSPID"] = SSPId;
-                await _navigation.PushAsync(new HomePage());
+                var token = await _userService.Login(int.Parse(SSPId), Password);
+
+
+                if (token != null)
+                {
+                    Application.Current.Properties["SSPID"] = SSPId;
+                    Application.Current.Properties["token"] = token;
+                    await _navigation.PushAsync(new HomePage());
+                }
+
+                else
+                    UserDialogs.Instance.Alert("Wrong ID or Password");
             }
-
-            else
-                UserDialogs.Instance.Alert("Wrong ID or Password");
-
-
+        
         }
     }
 }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using SSPWorld.Models;
 using SSPWorld.Repositories;
 using SSPWorld.Views;
@@ -14,9 +16,9 @@ namespace SSPWorld.ViewModels
     {
         private readonly INavigation _navigation;
 
-        private readonly EnrollmentRepository _enrollmentRepository = new EnrollmentRepository();
+        private readonly IEnrollmentRepository _enrollmentRepository = new EnrollmentRepository();
         private readonly CourseRepository _courseRepository = new CourseRepository();
-        private readonly UpdatesRepository _updatesRepository = new UpdatesRepository();
+        private readonly IUpdateRepository _updatesRepository = new UpdatesRepository();
 
         private ObservableCollection<Update> _updates = new ObservableCollection<Update>();
 
@@ -32,7 +34,7 @@ namespace SSPWorld.ViewModels
             }
         }
 
-        public Course Course { get; set; }
+        public Course Course { get; set; } = new Course();
 
         private bool _isEnrolled;
         public bool IsEnrolled
@@ -62,7 +64,7 @@ namespace SSPWorld.ViewModels
         public ICommand SubscribeCommand { get; private set; }
         public ICommand ItemTappedCommand { get; private set; }
 
-        public CourseDetailsViewModel(int courseId, INavigation navigation)
+        public CourseDetailsViewModel(string courseId, INavigation navigation)
         {
             _navigation = navigation;
             BindCommands();
@@ -76,38 +78,37 @@ namespace SSPWorld.ViewModels
             ItemTappedCommand = new Command(ItemTapped);
         }
 
-        private async void GetCourse(int courseId)
+        private void GetCourse(string courseId)
         {
-            Course = await _courseRepository.GetCourseById(courseId);
+            Task.Run(async () =>
+            {
+                Course = await _courseRepository.GetCourseById(courseId);
+                IsEnrolled = await _enrollmentRepository.IsEnrolled(courseId);
+            }).Wait();
 
-            var studentId = Application.Current.Properties["SSPID"];
-            IsEnrolled = await _enrollmentRepository
-                .IsEnrolled(Convert.ToInt32(studentId), courseId);
         }
 
-        private async void GetUpdates()
+        private void GetUpdates()
         {
-            var updates = await _updatesRepository.GetUpdatesByCourseId(Course.Id);
+            var updates = new List<Update>();
+            Task.Run(async () => { updates = await _updatesRepository.GetUpdatesByCourseId(Course.Id); }).Wait();
             foreach (var update in updates)
             {
                 _updates.Add(update);
             }
         }
 
-
-        private async void Subscribe()
-        {       
-            var enrollment = new Enrollment
+        private void Subscribe()
+        {
+            Task.Run(async () =>
             {
-                CourseId = Course.Id,
-                StudentId = Convert.ToInt32(Application.Current.Properties["SSPID"])
-            };
-            if (!IsEnrolled)
-                await _enrollmentRepository.AddNewEnrollment(enrollment);
-            else
-                await _enrollmentRepository.DeleteEnrollment(enrollment);
+                if (!IsEnrolled)
+                    await _enrollmentRepository.AddNewEnrollment(Course.Id);
+                else
+                    await _enrollmentRepository.DeleteEnrollment(Course.Id);
+            }).Wait();
 
-            MessagingCenter.Send(this, "EnrollmentsChanged", enrollment);
+            MessagingCenter.Send(this, "EnrollmentsChanged", Course.Id);
 
             IsEnrolled = !IsEnrolled;
         }

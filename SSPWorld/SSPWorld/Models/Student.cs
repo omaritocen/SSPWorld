@@ -10,13 +10,11 @@ namespace SSPWorld.Models
 
     public class Student
     {
-        public int SSPId { get; set; }
         public string Image { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Year Year { get; set; }
         public Department Department { get; set; }
-        public IEnumerable<Enrollment> Enrollments { get; set; }
-        
+
     }
 }

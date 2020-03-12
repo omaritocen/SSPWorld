@@ -86,6 +86,7 @@ namespace SSPWorld.ViewModels
 
         private void FillAllCourses()
         {
+            if (_courseGroups == null) return;
             foreach (var courseGroup in _courseGroups)
             {
                 _courses.Add(courseGroup);
@@ -97,6 +98,7 @@ namespace SSPWorld.ViewModels
             var courses = _courseGroups;
             courses = courses.Where(x => x.Title == SelectedTerm.ToString()).ToList();
             _courses.Clear();
+
             foreach (var courseGrouping in courses)
             {
                 _courses.Add(courseGrouping);

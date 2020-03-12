@@ -1,77 +1,106 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SSPWorld.Models;
+using Xamarin.Forms;
 
 namespace SSPWorld.Services
 {
-    public interface IUpdatesService
+    public interface IUpdatesService 
     {
-        Task<IEnumerable<Update>> GetUpdatesAsync();
-        Task<Update> GetUpdateByIdAsync(int id);
-        Task<IEnumerable<Update>> GetStudentUpdatesByCourseIdAsync(int courseId);
+        Task<List<Update>> GetEnrolledUpdatesAsync();
+        Task<Update> GetUpdateByIdAsync(string id);
+
+        Task<List<Update>> GetStudentUpdatesByCourseIdAsync(string courseId);
     }
 
-    public class UpdatesService : IUpdatesService
+    public class UpdatesService : BaseService, IUpdatesService
     {
 
-        private List<Update> _updates = new List<Update>()
-        {
-            new Update()
-            {
-                Id = 1,
-                CourseId = 1,
-                Title = "Assignment #3",
-                Body = "the link for the drive http://drive.google.com",
-                StartDate = new DateTime(2020, 1, 9),
-                Deadline = new DateTime(2020, 1, 18)
-            },
-            new Update()
-            {
-                Id = 2,
-                CourseId = 2,
-                Title = "History Report",
-                Body = "Make a report about the textile (20 Marks Coursework)",
-                StartDate = new DateTime(2020, 1, 3),
-                Deadline = new DateTime(2020, 1, 28)
-            },
+        private readonly HttpClient _client;
 
-            new Update()
+        public UpdatesService()
+        {
+            _client = new HttpClient();
+            var token = Application.Current.Properties["token"];
+            _client.DefaultRequestHeaders.Add("x-auth-token", token.ToString());
+        }
+
+        public async Task<List<Update>> GetEnrolledUpdatesAsync()
+        {
+            var url = string.Concat(URL, "updates/getStudentUpdates");
+            var uri = new Uri(string.Format(url, string.Empty));
+
+            HttpResponseMessage response = null;
+            try
             {
-                Id = 3,
-                CourseId = 1,
-                Title = "Lab Handbook",
-                Body = "Please make sure to bring your lab handbook as coursework will be put on",
-                StartDate = new DateTime(2020, 1, 2),
-                Deadline = new DateTime(2020, 1, 11)
-            },
-            new Update()
-            {
-                Id = 4,
-                CourseId = 3,
-                Title = "Get Papers",
-                Body = "The Dr is reminding you to get 10 50*70 papers",
-                StartDate = new DateTime(2020, 1, 2),
-                Deadline = new DateTime(2020, 1, 11)
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var updates = JsonConvert.DeserializeObject<List<Update>>(result);
+                    return updates;
+                }
             }
-        };
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
 
-        public async Task<IEnumerable<Update>> GetUpdatesAsync()
-        {
-            return _updates;
+            return null;
         }
 
-        public async Task<Update> GetUpdateByIdAsync(int id)
+        public async Task<Update> GetUpdateByIdAsync(string id)
         {
-            return _updates.FirstOrDefault(x => x.Id == id);
+            var url = string.Concat(URL, "updates/" + id);
+            var uri = new Uri(string.Format(url, string.Empty));
+
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var update = JsonConvert.DeserializeObject<Update>(result);
+                    return update;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return null;
         }
 
 
-        public async Task<IEnumerable<Update>> GetStudentUpdatesByCourseIdAsync(int courseId)
+        public async Task<List<Update>> GetStudentUpdatesByCourseIdAsync(string courseId)
         {
-            return _updates.Where(x => x.CourseId == courseId).ToList();
+            var url = string.Concat(URL, "updates/getUpdatesByCourseId/" + courseId);
+            var uri = new Uri(string.Format(url, string.Empty));
+
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var updates = JsonConvert.DeserializeObject<List<Update>>(result);
+                    return updates;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return null;
         }
     }
 }

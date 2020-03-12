@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using SSPWorld.Models;
 using SSPWorld.Repositories;
 using SSPWorld.Views;
@@ -16,9 +17,8 @@ namespace SSPWorld.ViewModels
     {
         private readonly INavigation _navigation;
 
-        private readonly StudentRepository _studentRepository = new StudentRepository();
-        private readonly EnrollmentRepository _enrollmentRepository = new EnrollmentRepository();
-        private readonly CourseRepository _courseRepository = new CourseRepository();
+        private readonly IStudentRepository _studentRepository = new StudentRepository();
+        private readonly ICourseRepository _courseRepository = new CourseRepository();
 
         private ObservableCollection<Course> _courses = new ObservableCollection<Course>();
 
@@ -55,60 +55,56 @@ namespace SSPWorld.ViewModels
         public ProfileViewModel(INavigation navigation)
         {
             _navigation = navigation;
-            SetProfile();
             BindCommands();
             CheckForNewSubjects();
+            SetProfile();
         }
 
-        private void CheckForNewSubjects()
-        {
-            MessagingCenter.Subscribe<CourseDetailsViewModel, Enrollment>
-            (this, "EnrollmentsChanged",
-                async (obj, arg) =>
-                {
-                    await PopulateSubjects(arg);
-                });
-        }
-
-        private async void SetProfile()
-        {
-            var id = Application.Current.Properties["SSPID"];
-            var student = await _studentRepository.GetStudentBySSPId(Convert.ToInt32(id));
-            Student = student;
-            await PopulateSubjects();
-         
-        }
-
-        private async Task PopulateSubjects(Enrollment enrollment = null)
-        {
-            _courses.Clear();
-            var enrollments = await
-                _enrollmentRepository.GetStudentEnrollmentsById(Student.SSPId);
-            var coursesIds = enrollments.Select(x => x.CourseId);
-
-            foreach (var id in coursesIds)
-            {
-                var course = await _courseRepository.GetCourseById(id);
-                _courses.Add(course);
-            }
-
-            // REDUNDANT SOLUTION
-            if (enrollment != null)
-            {
-                var course = await _courseRepository.GetCourseById(enrollment.CourseId);
-                _courses.Add(course);
-            }
-        }
 
         private void BindCommands()
         {
             ItemTappedCommand = new Command(ItemTapped);
         }
 
+        private void CheckForNewSubjects()
+        {
+            MessagingCenter.Subscribe<CourseDetailsViewModel, string>
+            (this, "EnrollmentsChanged",
+                async (obj, arg) =>
+                {
+                    await PopulateSubjects();
+                });
+        }
+
+        private void SetProfile()
+        {
+            Task.Run(async () =>
+            {
+                var student = await _studentRepository.GetStudentProfile();
+                Student = student;
+                await PopulateSubjects();
+
+            }).Wait();
+        }
+
+        private async Task PopulateSubjects()
+        {
+            _courses.Clear();
+
+            var courses = await _courseRepository.GetEnrolledCourses();
+            if (courses == null) return;
+            foreach (var course in courses)
+            {
+                _courses.Add(course);
+            }
+        }
+
+
         private async void ItemTapped()
         {
             await _navigation.PushModalAsync(new CourseDetailsPage(SelectedCourse.Id));
             SelectedCourse = null;
         }
+
     }
 }

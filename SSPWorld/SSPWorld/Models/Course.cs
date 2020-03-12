@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace SSPWorld.Models
 {
@@ -9,12 +12,16 @@ namespace SSPWorld.Models
 
     public class Course
     {
-        public int Id { get; set; }
+
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        [JsonProperty("_id")]
+        public string Id { get; set; }
         public string Name { get; set; }
         public int CreditHours { get; set; }
         public CourseType CourseType { get; set; }
+
+        [JsonProperty("term")]
         public Term CourseTerm { get; set; }
-        public IEnumerable<Enrollment> Enrollments { get; set; }
-        public IEnumerable<Update> Updates { get; set; }
     }
 }

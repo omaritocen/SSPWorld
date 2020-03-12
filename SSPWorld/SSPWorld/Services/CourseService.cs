@@ -1,64 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SSPWorld.Models;
+using Xamarin.Forms;
 
 namespace SSPWorld.Services
 {
-    public class CourseService
+    public interface ICourseService
     {
-        private IEnumerable<Course> _courses = new List<Course>()
+        Task<IEnumerable<Course>> GetCoursesAsync();
+        Task<Course> GetCourseByIdAsync(string id);
+        Task<List<Course>> GetEnrolledCourses();
+    }
+
+    public class CourseService : BaseService, ICourseService
+    {
+        private readonly HttpClient _client;
+        public CourseService()
         {
-            new Course()
-            {
-                Id = 1,
-                Name = "Physics I",
-                CreditHours = 3,
-                CourseTerm = Term.First,
-                CourseType = CourseType.Core
-            },
+            _client = new HttpClient();
+            var token = Application.Current.Properties["token"];
+            _client.DefaultRequestHeaders.Add("x-auth-token", token.ToString());
+        }
 
-            new Course()
-            {
-                Id = 2,
-                Name = "History of Engineering",
-                CreditHours = 1,
-                CourseTerm = Term.Second,
-                CourseType = CourseType.Humanity
-            },
-
-            new Course()
-            {
-                Id = 3,
-                Name = "Technical Building",
-                CreditHours = 3,
-                CourseTerm = Term.Third,
-                CourseType = CourseType.Core
-            },
-
-            new Course()
-            {
-                Id = 4,
-                Name = "Operating Systems",
-                CreditHours = 2,
-                CourseTerm = Term.Fifth,
-                CourseType = CourseType.Elective
-            }
-
-
-        };
 
 
         public async Task<IEnumerable<Course>> GetCoursesAsync()
         {
-            return _courses;
+            var url = string.Concat(URL, "courses");
+            var uri = new Uri(string.Format(url, string.Empty));
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var courses = JsonConvert.DeserializeObject<List<Course>>(result);
+                    return courses;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return null;
         }
 
-        public async Task<Course> GetCourseByIdAsync(int id)
+        public async Task<Course> GetCourseByIdAsync(string id)
         {
-            return _courses.FirstOrDefault(x => x.Id == id);
+            var url = string.Concat(URL, "courses/" + id);
+            var uri = new Uri(string.Format(url, string.Empty));
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var course = JsonConvert.DeserializeObject<Course>(result);
+                    return course;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return null;
+        }
+
+        public async Task<List<Course>> GetEnrolledCourses()
+        {
+            var url = string.Concat(URL, "courses/getEnrolledCourses");
+            var uri = new Uri(string.Format(url, string.Empty));
+            HttpResponseMessage response = null;
+            try
+            {
+                response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadAsStringAsync();
+                    var courses = JsonConvert.DeserializeObject<List<Course>>(result);
+                    return courses;
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Handle the server error
+            }
+
+            return null;
         }
     }
 }

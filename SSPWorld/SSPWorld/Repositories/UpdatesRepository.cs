@@ -8,35 +8,30 @@ using SSPWorld.Services;
 
 namespace SSPWorld.Repositories
 {
-    public class UpdatesRepository
+    public interface IUpdateRepository
     {
-        private readonly UpdatesService _updatesService = new UpdatesService();
-        private readonly EnrollmentRepository _enrollmentRepository = new EnrollmentRepository();
+        Task<List<Update>> GetEnrolledUpdates();
+        Task<List<Update>> GetUpdatesByCourseId(string courseId);
+        Task<Update> GetUpdateById(string updateId);
+    }
 
-        public async Task<Update> GetUpdateById(int id)
+    public class UpdatesRepository : IUpdateRepository
+    {
+        private readonly IUpdatesService _updatesService = new UpdatesService();
+
+        public async Task<Update> GetUpdateById(string id)
         {
             return await _updatesService.GetUpdateByIdAsync(id);
         }
 
-        public async Task<IEnumerable<Update>> GetUpdatesByCourseId(int courseId)
+        public async Task<List<Update>> GetUpdatesByCourseId(string courseId)
         {
             return await _updatesService.GetStudentUpdatesByCourseIdAsync(courseId);
         }
 
-        public async Task<IEnumerable<Update>> GetUpdatesBySSPId(int SSPId)
+        public async Task<List<Update>> GetEnrolledUpdates()
         {
-            var enrollments = await _enrollmentRepository.GetStudentEnrollmentsById(SSPId);
-            var coursesId = enrollments.Where(x => x.StudentId == SSPId)
-                                       .Select(x => x.CourseId);
-
-            var updates = new List<Update>();
-            foreach (var courseId in coursesId)
-            {
-                var pack = await GetUpdatesByCourseId(courseId);
-                updates.AddRange(pack);
-            }
-
-            return updates;
+            return await _updatesService.GetEnrolledUpdatesAsync();
         }
     }
 }

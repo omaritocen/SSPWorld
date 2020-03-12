@@ -8,41 +8,30 @@ using SSPWorld.Services;
 
 namespace SSPWorld.Repositories
 {
-    public class EnrollmentRepository
+    public interface IEnrollmentRepository
     {
-        private readonly EnrollmentService _enrollmentService = new EnrollmentService();
+        Task AddNewEnrollment(string courseId);
+        Task DeleteEnrollment(string courseId);
+        Task<bool> IsEnrolled(string courseId);
+    }
 
-        public async Task<IEnumerable<Enrollment>> GetEnrollments()
+    public class EnrollmentRepository : IEnrollmentRepository
+    {
+        private readonly IEnrollmentService _enrollmentService = new EnrollmentService();
+
+        public async Task AddNewEnrollment(string courseId)
         {
-            return await _enrollmentService.GetEnrollmentsAsync();
+            await _enrollmentService.AddNewEnrollmentAsync(courseId);
         }
 
-        public async Task<IEnumerable<Enrollment>> GetStudentEnrollmentsById(int id)
+        public async Task DeleteEnrollment(string courseId)
         {
-            return await _enrollmentService.GetEnrollmentsByStudentId(id);
+            await _enrollmentService.DeleteEnrollmentAsync(courseId);
         }
 
-        public async Task<bool> IsEnrolled(int studentId, int courseId)
+        public async Task<bool> IsEnrolled(string courseId)
         {
-            var enrollments = await GetStudentEnrollmentsById(studentId);
-            foreach (var enrollment in enrollments)
-            {
-                if (enrollment.CourseId == courseId)
-                    return true;
-            }
-
-            return false;
+            return await _enrollmentService.IsEnrolledAsync(courseId);
         }
-
-        public async Task AddNewEnrollment(Enrollment enrollment)
-        {
-            await _enrollmentService.AddNewEnrollmentAsync(enrollment);
-        }
-
-        public async Task DeleteEnrollment(Enrollment enrollment)
-        {
-            await _enrollmentService.DeleteEnrollmentAsync(enrollment);
-        }
-
     }
 }

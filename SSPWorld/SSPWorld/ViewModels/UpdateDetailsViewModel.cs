@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using SSPWorld.Models;
 using SSPWorld.Repositories;
@@ -10,13 +11,13 @@ namespace SSPWorld.ViewModels
 {
     public class UpdateDetailsViewModel : BaseViewModel
     {
-        private readonly UpdatesRepository _updatesRepository = new UpdatesRepository();
+        private readonly IUpdateRepository _updatesRepository = new UpdatesRepository();
         private readonly CourseRepository _courseRepository = new CourseRepository();
         public Update Update { get; set; }
         public string CourseName { get; set; }
         public string DaysLeft { get; set; }
 
-    public UpdateDetailsViewModel(int updateId)
+        public UpdateDetailsViewModel(string updateId)
         {
             GetUpdate(updateId);
             BindCommands();
@@ -27,11 +28,15 @@ namespace SSPWorld.ViewModels
             
         }
 
-        private async void GetUpdate(int updateId)
+        private void GetUpdate(string updateId)
         {
-            Update = await _updatesRepository.GetUpdateById(updateId);
-            var course = await _courseRepository.GetCourseById(Update.CourseId);
-            CourseName = course.Name;
+            Task.Run(async () =>
+            {
+                Update = await _updatesRepository.GetUpdateById(updateId);
+                var course = await _courseRepository.GetCourseById(Update.CourseId);
+                CourseName = course.Name;
+            }).Wait();
+
             CalculateDeadLine();
         }
 

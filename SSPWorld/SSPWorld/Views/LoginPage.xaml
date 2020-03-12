@@ -8,6 +8,7 @@
              x:Class="SSPWorld.Views.LoginPage"
              NavigationPage.HasNavigationBar="false"
              Padding="10">
+
     <ContentPage.Content>
         <StackLayout>
             <StackLayout Margin="10" VerticalOptions="CenterAndExpand">

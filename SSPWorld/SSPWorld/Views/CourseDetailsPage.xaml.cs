@@ -12,7 +12,7 @@ namespace SSPWorld.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CourseDetailsPage : ContentPage
     {
-        public CourseDetailsPage(int studentId)
+        public CourseDetailsPage(string studentId)
         {
             InitializeComponent();
             BindingContext = new CourseDetailsViewModel(studentId, Navigation);
