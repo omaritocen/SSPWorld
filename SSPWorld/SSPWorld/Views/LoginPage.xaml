@@ -24,6 +24,7 @@
                 <Entry IsPassword="True" Text="{Binding Password}" Placeholder="Password" />
 
                 <Button Text="Login" Command="{Binding LoginCommand}" />
+                <Button Text="Not a user? Register" Command="{Binding GoToRegisterCommand}" />
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

@@ -109,6 +109,7 @@ namespace SSPWorld.ViewModels
         {
             _courses.Clear();
             FillAllCourses();
+            //TODO:  DESELECT THE TERM
         }
 
 

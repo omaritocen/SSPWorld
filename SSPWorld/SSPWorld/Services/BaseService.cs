@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Text;
 using Windows.UI.Xaml;
 using Xamarin.Forms;
+
 
 namespace SSPWorld.Services
 {
@@ -11,6 +13,12 @@ namespace SSPWorld.Services
         // TODO: THIS WHOLE CLASS TO BE CHANGED
 
         //TODO Possibility of refactoring httpclient rather than calling it in every class
+        protected HttpClient HttpClient;
+
+        public BaseService()
+        {
+            HttpClient = ClientService.HttpClient;
+        }
 
         public string URL = SetUrl();
 

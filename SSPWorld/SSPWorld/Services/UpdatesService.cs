@@ -21,15 +21,6 @@ namespace SSPWorld.Services
     public class UpdatesService : BaseService, IUpdatesService
     {
 
-        private readonly HttpClient _client;
-
-        public UpdatesService()
-        {
-            _client = new HttpClient();
-            var token = Application.Current.Properties["token"];
-            _client.DefaultRequestHeaders.Add("x-auth-token", token.ToString());
-        }
-
         public async Task<List<Update>> GetEnrolledUpdatesAsync()
         {
             var url = string.Concat(URL, "updates/getStudentUpdates");
@@ -38,7 +29,7 @@ namespace SSPWorld.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await _client.GetAsync(uri);
+                response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -62,7 +53,7 @@ namespace SSPWorld.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await _client.GetAsync(uri);
+                response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -87,7 +78,7 @@ namespace SSPWorld.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await _client.GetAsync(uri);
+                response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();

@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:behaviors="clr-namespace:SSPWorld.Utilities.Behaviors;assembly=SSPWorld"
+             xmlns:valueConverters="clr-namespace:SSPWorld.Utilities.ValueConverters;assembly=SSPWorld"
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.CreateStudentProfilePage"
+             NavigationPage.HasNavigationBar="false">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <valueConverters:IntEnumConverter x:Key="IntEnum"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+      <StackLayout Padding="10">
+          <TableView HasUnevenRows="True">
+              <TableRoot>
+                  <TableSection Title="Student Data">
+                      <EntryCell Label="First Name"
+                                 Text="{Binding FirstName}" />
+
+                      <EntryCell Text="{Binding LastName}"
+                                 Label="Last Name" />
+                      <ViewCell>
+                          <StackLayout Orientation="Horizontal">
+                                <Label Text="Student Year"
+                                       VerticalOptions="Center"
+                                       Margin="20, 0, 20 ,0"/>
+
+                                <Picker WidthRequest="200"  
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="EndAndExpand"
+                                      TextColor="Crimson"
+                                      Margin="20, 10, 20, 5"
+                                      ItemsSource="{Binding YearsNames}"
+                                      SelectedIndex="{Binding SelectedYear,Mode=TwoWay,
+                                    Converter={StaticResource IntEnum}}">
+                                </Picker>
+                          </StackLayout>
+                        </ViewCell>
+                      <ViewCell>
+                          <StackLayout Orientation="Horizontal">
+                              <Label Text="Student Department"
+                                     VerticalOptions="Center"
+                                     Margin="20, 0, 20 ,0"/>
+                                <Picker WidthRequest="200"  
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="EndAndExpand"
+                                      TextColor="Crimson"
+                                      Margin="20, 10, 20, 5"
+                                      ItemsSource="{Binding DepartmentsNames}"
+                                      SelectedIndex="{Binding SelectedDepartment,Mode=TwoWay,
+                                    Converter={StaticResource IntEnum}}">
+                              </Picker>
+                          </StackLayout>
+                      </ViewCell>
+                  </TableSection>
+              </TableRoot>
+          </TableView>
+            <Button Text="Submit" Command="{Binding SubmitCommand}" />
+        </StackLayout>
+  </ContentPage.Content>
+</ContentPage>

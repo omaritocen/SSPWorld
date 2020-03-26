@@ -10,15 +10,21 @@ namespace SSPWorld.Repositories
     public interface IStudentRepository
     {
         Task<Student> GetStudentProfile();
+        Task<string> CreateStudentProfile(Student student);
     }
 
     public class StudentRepository : IStudentRepository
     {
-        private readonly StudentService _studentService = new StudentService();
+        private readonly IStudentService _studentService = new StudentService();
 
         public async Task<Student> GetStudentProfile()
         {
             return await _studentService.GetStudentProfileAsync();
+        }
+
+        public async Task<string> CreateStudentProfile(Student student)
+        {
+            return await _studentService.CreateStudentProfileAsync(student);
         }
     }
 }

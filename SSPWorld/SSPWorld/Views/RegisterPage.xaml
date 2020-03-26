@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:behaviors="clr-namespace:SSPWorld.Utilities.Behaviors;assembly=SSPWorld"
+             mc:Ignorable="d"
+             x:Class="SSPWorld.Views.RegisterPage"
+             NavigationPage.HasNavigationBar="false"
+             Padding="10">
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+            <StackLayout Margin="10" VerticalOptions="CenterAndExpand">
+                <Image Source="logo.png" />
+                <StackLayout BindingContext="{Binding RegisterModel}">
+
+                    <Entry Keyboard="Email" Text="{Binding Email}" Placeholder="Email" />
+
+                    <Entry Keyboard="Numeric" Text="{Binding SSPId}" Placeholder="ID">
+                        <Entry.Behaviors>
+                            <behaviors:NumericEntryBehavior />
+                        </Entry.Behaviors>
+                    </Entry>
+
+                    <Entry IsPassword="True" Text="{Binding Password}" Placeholder="Password" />
+                    <Entry IsPassword="True" Text="{Binding ConfirmPassword}" Placeholder=" Confirm Password" />
+                </StackLayout>
+                <Button Text="Register" Command="{Binding RegisterCommand}" />
+                <Button Text="Already a User? Login" Command="{Binding GoToLoginCommand}" />
+            </StackLayout>
+        </StackLayout>
+            </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

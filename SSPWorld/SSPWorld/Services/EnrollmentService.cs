@@ -20,15 +20,6 @@ namespace SSPWorld.Services
     public class EnrollmentService : BaseService, IEnrollmentService
     {
 
-        private readonly HttpClient _client;
-        public EnrollmentService()
-        {
-            _client = new HttpClient();
-            var token = Application.Current.Properties["token"];
-            _client.DefaultRequestHeaders.Add("x-auth-token", token.ToString());
-        }
-
-
         public async Task AddNewEnrollmentAsync(string courseId)
         {
             var url = string.Concat(URL, "enrollments");
@@ -40,7 +31,7 @@ namespace SSPWorld.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await _client.PostAsync(uri, content);
+                response = await HttpClient.PostAsync(uri, content);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -60,7 +51,7 @@ namespace SSPWorld.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await _client.DeleteAsync(uri);
+                response = await HttpClient.DeleteAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();
@@ -83,7 +74,7 @@ namespace SSPWorld.Services
             HttpResponseMessage response = null;
             try
             {
-                response = await _client.GetAsync(uri);
+                response = await HttpClient.GetAsync(uri);
                 if (response.IsSuccessStatusCode)
                 {
                     var result = await response.Content.ReadAsStringAsync();

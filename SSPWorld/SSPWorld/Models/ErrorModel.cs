@@ -4,9 +4,8 @@ using System.Text;
 
 namespace SSPWorld.Models
 {
-    public class User
+    public class ErrorModel
     {
-        public int Id { get; set; }
-        public string SSPId { get; set; }
+        public string Error { get; set; }
     }
 }

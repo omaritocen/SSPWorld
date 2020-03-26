@@ -35,7 +35,7 @@
                     Margin="20, 10, 20, 5"
                     ItemsSource="{Binding TermsNames}"
                     SelectedIndex="{Binding SelectedTerm,
-                    Converter={StaticResource IntEnum}}">
+                    Converter={StaticResource IntEnum}, Mode=TwoWay}">
                     <Picker.Behaviors>
                         <behaviors:EventToCommandBehavior 
                             EventName="SelectedIndexChanged" 
