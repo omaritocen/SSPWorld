@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Net;
 using System.Text;
 using Xamarin.Forms;
 
@@ -9,14 +11,11 @@ namespace SSPWorld.Utilities.ValueConverters
     public class ImageValueConverter : IValueConverter
     {
 
+        static WebClient Client = new WebClient();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var source = value as string;
-            if (string.IsNullOrEmpty(source))
-                return null;
-
-            var imagePath = UriImageSource.FromUri(new Uri(value.ToString()));
-            return imagePath;
+            var byteArray = Client.DownloadData(value.ToString());
+            return ImageSource.FromStream(() => new MemoryStream(byteArray));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -25,6 +25,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Button Text="Add Announcement" Command="{Binding AddAnnouncementCommand}"
+                    Padding="10"  />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -10,14 +10,11 @@ namespace SSPWorld.Services
 {
     public class BaseService
     {
-        // TODO: THIS WHOLE CLASS TO BE CHANGED
-
-        //TODO Possibility of refactoring httpclient rather than calling it in every class
         protected HttpClient HttpClient;
 
         public BaseService()
         {
-            HttpClient = ClientService.HttpClient;
+            HttpClient = HttpClientSingleton.GetInstance();
         }
 
         public string URL = SetUrl();

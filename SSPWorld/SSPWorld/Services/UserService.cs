@@ -38,7 +38,7 @@ namespace SSPWorld.Services
                 {
                     var result = await response.Content.ReadAsStringAsync();
                     var token = JsonConvert.DeserializeObject<TokenDto>(result);
-                    HttpClient.DefaultRequestHeaders.Add("x-auth-token", token.Token);
+                    HttpClientSingleton.SetAccessToken(token.Token);
                     return token.Token;
                 }
 

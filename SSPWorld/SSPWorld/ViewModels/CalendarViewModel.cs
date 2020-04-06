@@ -20,6 +20,19 @@ namespace SSPWorld.ViewModels
         public CalendarViewModel()
         {
             InitCalendar();
+            CheckForChanges();
+        }
+
+        //THIS CODE DOESN'T RUN FOR UNKNOWN REASONS
+        private void CheckForChanges()
+        {
+            MessagingCenter.Subscribe<CourseDetailsViewModel, string>
+            (this, "EnrollmentsChanged",
+                (obj, args) =>
+                {
+                    InitCalendar();
+                });
+
         }
 
         private void InitCalendar()
@@ -44,5 +57,6 @@ namespace SSPWorld.ViewModels
                 Events.Add(key, groupedUpdates[key]);
             }
         }
+
     }
 }
