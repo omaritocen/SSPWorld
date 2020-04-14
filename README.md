@@ -9,9 +9,16 @@ communicating and never miss a deadline.
 
 
 ## Table of contents
+* [Screenshots](#screenshots)
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [User Manual](#user-manual)
+
+## Screenshots
+
+![login](https://i.imgur.com/K2FYwYK.png)
+![profile](https://i.imgur.com/dyDzFyi.png)
+![calendar](https://i.imgur.com/uaWn1Iy.png)
 
 ## General info
 
