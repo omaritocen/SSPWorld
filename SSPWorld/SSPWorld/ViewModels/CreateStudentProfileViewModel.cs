@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.System;
 using Acr.UserDialogs;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using SSPWorld.Models;
 using SSPWorld.Repositories;
 using SSPWorld.Utilities;
@@ -18,8 +21,25 @@ namespace SSPWorld.ViewModels
     {
         private readonly INavigation _navigation;
         private readonly IStudentRepository _studentRepository = new StudentRepository();
+        private MediaFile _mediaFile;
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        private ImageSource _imageSource;
+
+        public ImageSource ImageSource
+        {
+            get => _imageSource;
+            set
+            {
+                if (_imageSource == value)
+                    return;
+                _imageSource = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private Department _selectedDepartment;
 
@@ -51,6 +71,7 @@ namespace SSPWorld.ViewModels
         public List<string> DepartmentsNames => Enum.GetNames(typeof(Department)).Select(b => b.SplitCamelCase()).ToList();
 
         public ICommand SubmitCommand { get; private set; }
+        public ICommand PickPhotoCommand { get; private set; }
 
         public CreateStudentProfileViewModel(INavigation navigation)
         {
@@ -61,10 +82,31 @@ namespace SSPWorld.ViewModels
         private void BindCommands()
         {
             SubmitCommand = new Command(async c => await Submit());
+            PickPhotoCommand = new Command(async c => await PickPhoto());
+        }
+
+        private async Task PickPhoto()
+        {
+            await CrossMedia.Current.Initialize();
+
+            if (!CrossMedia.Current.IsPickPhotoSupported)
+            {
+                await UserDialogs.Instance.AlertAsync("Unsupported photo picking on this phone");
+                return;
+            }
+
+            _mediaFile = await CrossMedia.Current.PickPhotoAsync();
+            if (_mediaFile == null) return;
+
+            ImageSource = ImageSource.FromStream(() => _mediaFile.GetStream());
+
         }
 
         private async Task Submit()
         {
+
+
+
             //TODO: Image to be added
             var student = new Student()
             {
@@ -81,9 +123,8 @@ namespace SSPWorld.ViewModels
                 if (result == "Success")
                     App.Current.MainPage = new NavigationPage(new HomePage());
                 else
-                {
                     UserDialogs.Instance.Alert("Error: " + result);
-                }
+                
             }
             else
             {

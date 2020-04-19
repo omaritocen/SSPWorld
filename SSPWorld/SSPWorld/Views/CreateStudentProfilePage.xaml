@@ -58,6 +58,12 @@
                               </Picker>
                           </StackLayout>
                       </ViewCell>
+                        <ViewCell>
+                            <StackLayout>
+                                <Image Source="{Binding ImageSource, Mode=TwoWay}" />
+                                <Button Command="{Binding PickPhotoCommand}" Text="Pick Photo" />
+                            </StackLayout>
+                        </ViewCell>
                   </TableSection>
               </TableRoot>
           </TableView>

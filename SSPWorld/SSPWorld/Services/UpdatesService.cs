@@ -23,7 +23,7 @@ namespace SSPWorld.Services
 
         public async Task<List<Update>> GetEnrolledUpdatesAsync()
         {
-            var url = string.Concat(URL, "updates/getStudentUpdates");
+            var url = string.Concat(URL, "students/updates/");
             var uri = new Uri(string.Format(url, string.Empty));
 
             HttpResponseMessage response = null;
@@ -72,7 +72,7 @@ namespace SSPWorld.Services
 
         public async Task<List<Update>> GetStudentUpdatesByCourseIdAsync(string courseId)
         {
-            var url = string.Concat(URL, "updates/getUpdatesByCourseId/" + courseId);
+            var url = string.Concat(URL, "courses/" + courseId + "/updates");
             var uri = new Uri(string.Format(url, string.Empty));
 
             HttpResponseMessage response = null;

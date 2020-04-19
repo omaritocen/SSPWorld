@@ -46,7 +46,7 @@ namespace SSPWorld.Services
 
         public async Task<bool> DeleteEnrollmentAsync(string courseId)
         {
-            var url = string.Concat(URL, "enrollments/deleteByCourseId/" + courseId);
+            var url = string.Concat(URL, "students/enrollments/courses/" + courseId);
             var uri = new Uri(string.Format(url, string.Empty));
             HttpResponseMessage response = null;
             try
@@ -69,7 +69,7 @@ namespace SSPWorld.Services
 
         public async Task<bool> IsEnrolledAsync(string courseId)
         {
-            var url = string.Concat(URL, "enrollments/isEnrolled/" + courseId);
+            var url = string.Concat(URL, "students/enrollments/courses/" + courseId);
             var uri = new Uri(string.Format(url, string.Empty));
             HttpResponseMessage response = null;
             try

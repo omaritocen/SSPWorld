@@ -18,7 +18,7 @@ namespace SSPWorld.Repositories
 
     public class CourseRepository : ICourseRepository
     {
-        private readonly CourseService _courseService = new CourseService();
+        private readonly ICourseService _courseService = new CourseService();
 
         public async Task<Course> GetCourseById(string id)
         {

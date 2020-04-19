@@ -69,7 +69,7 @@ namespace SSPWorld.Services
 
         public async Task<List<Course>> GetEnrolledCourses()
         {
-            var url = string.Concat(URL, "courses/getEnrolledCourses");
+            var url = string.Concat(URL, "students/enrollments/courses");
             var uri = new Uri(string.Format(url, string.Empty));
             HttpResponseMessage response = null;
             try

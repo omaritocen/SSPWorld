@@ -23,11 +23,11 @@ namespace SSPWorld.Services
         {
             var url = "";
             if (Device.RuntimePlatform == Device.Android)
-                url = "http://10.0.2.2:3000/api/";
+                url = "http://10.0.2.2:3000/api/v1/";
             else if (Device.RuntimePlatform == Device.iOS)
-                url = "http://localhost:3000/api/";
+                url = "http://localhost:3000/api/v1/";
             else if (Device.RuntimePlatform == Device.UWP)
-                url = "http://localhost:3000/api/";
+                url = "http://localhost:3000/api/v1/";
             return url;
         }
     }
